@@ -2,6 +2,12 @@ import express from "express";
 import http from "http";
 import cors from "cors";
 
+type QueryParams = {
+  arch: string;
+  platform: string;
+  current_version: string;
+};
+
 const port = 3002;
 const app = express();
 app.use(
@@ -14,22 +20,31 @@ app.use(
 app.use(cors());
 const server = http.createServer(app);
 
-//204 no update
-app.get("/", (req, res) => {
-  console.log("requested");
+const currentVersion = "1.0.6";
 
-  // res.status(204).send();
-  res.status(200).send(
-    JSON.stringify({
-      url: "http://localhost:3002/static/Dirent-darwin-arm64-1.0.2.zip",
-      name: "1.0.2",
-      notes: "Theses are some release notes innit",
-      pub_date: "2022-09-18T12:29:53+01:00",
-    })
-  );
+const hasUpdate = (queryParams: QueryParams) => {
+  return queryParams.current_version !== currentVersion;
+};
+
+app.get("/check-update", (req, res) => {
+  const query = req.query as QueryParams;
+  console.log("handling:" + JSON.stringify(query));
+
+  if (hasUpdate(query)) {
+    console.log("has update");
+    res.status(200).send(
+      JSON.stringify({
+        url: `http://localhost:3002/static/Dirent-darwin-arm64-${currentVersion}.zip`,
+        name: currentVersion,
+        notes: "Theses are some release notes innit",
+        pub_date: "2022-09-18T12:29:53+01:00",
+      })
+    );
+  } else {
+    console.log("no update");
+    res.status(204).send();
+  }
 });
-
-//
 
 app.use("/static", express.static("public"));
 
