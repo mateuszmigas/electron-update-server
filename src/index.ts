@@ -16,13 +16,15 @@ const server = http.createServer(app);
 
 //204 no update
 app.get("/", (req, res) => {
-  console.log("req", req);
+  console.log("requested");
+
+  // res.status(204).send();
   res.status(200).send(
     JSON.stringify({
-      url: "http://localhost:3002/static/com.github.Electron-darwin-arm64-1.0.0.zip",
-      name: "My Release Name",
+      url: "http://localhost:3002/static/Dirent-darwin-arm64-1.0.2.zip",
+      name: "1.0.2",
       notes: "Theses are some release notes innit",
-      pub_date: "2013-09-18T12:29:53+01:00",
+      pub_date: "2022-09-18T12:29:53+01:00",
     })
   );
 });
